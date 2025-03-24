@@ -5,6 +5,12 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      config_options:
+        description: 'Configuration options for the build'
+        required: true
+        default: '--with-syslog --with-glib --without-cutils --with-dummy_diag --with-are_on_apps'
 
 jobs:
   Repo-Build:
@@ -12,15 +18,20 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Setup Dependencies
+
+      - name: Build Docker Image
         run: |
-          sudo apt-get install autoconf automake libtool &&
-          sudo apt-get install glib-2.0
+          docker build -t audioreach-build .
       
-      - name: Build Project
-        run: |
-          autoreconf --install &&
-          ./configure --with-syslog --with-glib --without-cutils --with-dummy_diag --with-are_on_apps &&
-          make
-      
+      - name: Create output directory
+        run: mkdir -p ./output
+
+      - name: Run Docker container with volume
+        run: docker run --rm -v ${{ github.workspace }}/output:/app/output audioreach-build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./output
 
