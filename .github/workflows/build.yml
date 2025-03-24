@@ -1,0 +1,26 @@
+name: Audioreach Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  Repo-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Setup Dependencies
+        run: |
+          sudo apt-get install autoconf automake libtool &&
+          sudo apt-get install glib-2.0
+      
+      - name: Build Project
+        run: |
+          autoreconf --install &&
+          ./configure --with-syslog --with-glib --without-cutils --with-dummy_diag --with-are_on_apps &&
+          make
+      
+
