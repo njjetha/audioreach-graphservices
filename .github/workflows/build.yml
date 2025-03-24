@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build Docker Image
         run: |
-          docker build -t audioreach-build .
+          docker build --build-arg CONFIG_OPTIONS="${{ inputs.config_options }}" -t audioreach-build .
       
       - name: Run Build in Docker
         run: |
