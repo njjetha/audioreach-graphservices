@@ -27,11 +27,13 @@ jobs:
         run: mkdir -p ./output
 
       - name: Run Docker container with volume
-        run: docker run --rm -v ${{ github.workspace }}/output:/app/output audioreach-build
+        run: docker run --name audioreach audioreach-build
+
+      - name: Copy artifacts from container
+        run: docker cp audioreach:/app/output ./output
 
       - name: List contents of output directory
         run: ls -la ./output
-
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
