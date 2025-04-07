@@ -26,4 +26,4 @@ RUN autoreconf --install && \
     make DESTDIR=$OUTPUT_DIR install
 
 # Set the entrypoint to a shell
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash", "-c"]
