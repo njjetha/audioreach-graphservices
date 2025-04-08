@@ -6,11 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
-    inputs:
-      config_options:
-        description: 'Configuration options for the build'
-        required: true
-        default: '--with-syslog --with-glib --without-cutils --with-dummy_diag --with-are_on_apps'
 
 jobs:
   Repo-Build:
@@ -22,18 +17,15 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t audioreach-build .
-      
+          
       - name: Create output directory
         run: mkdir -p ./output
 
-      - name: Run Docker container with volume
+      - name: Run Docker container
         run: docker run --name audioreach audioreach-build
 
       - name: Copy artifacts from container
         run: docker cp audioreach:/app/output ./output
-
-      - name: List contents of output directory
-        run: ls -la ./output
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
